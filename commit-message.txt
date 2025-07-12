@@ -1,1 +1,1 @@
-feat: Add GitHub Actions workflow and test content
+fix: Adjust artifact path in deploy workflow

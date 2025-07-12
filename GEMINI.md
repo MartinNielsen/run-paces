@@ -42,7 +42,8 @@ Build a public GitHub Pages-hosted site that displays a passphrase prompt. When 
 
 #### 5. GitHub Actions
 
-*   Deploys `public-site/` to GitHub Pages on every push
+*   Deploys the *contents* of `public-site/` to the root of GitHub Pages (e.g., `https://martinnielsen.github.io/run-paces/`) on every push.
+*   **Crucially, this action only deploys; it does not perform any encryption.**
 
 ---
 
@@ -123,7 +124,7 @@ Build a public GitHub Pages-hosted site that displays a passphrase prompt. When 
 
 #### 🚀 GitHub Action
 *   **Task:** Write `deploy.yml` workflow.
-*   **Status:** Not Started
+*   **Status:** Done
 
 #### ✅ Finalize & Test
 *   **Task:** Create test content in `/private-site/index.html`.

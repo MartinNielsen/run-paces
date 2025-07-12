@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "sjcl": "^1.0.8"
+  }
+}
