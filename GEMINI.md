@@ -35,10 +35,9 @@ Build a public GitHub Pages-hosted site that displays a passphrase prompt. When 
 
 #### 4. Git Infrastructure
 
-*   `.git/hooks/pre-commit`: Runs encryption script before every commit that includes changes to `/private-site/`
 *   `.env`: Contains `ENCRYPTION_PASSPHRASE`
 *   `.env.example`: Template file for `.env`
-*   `private-site-version.txt`: A file containing an integer. This file should be manually updated when changes are made to the `private-site/` directory. This file is used to trigger the pre-commit hook.
+*   `private-site-version.txt`: A file containing an integer. This file should be manually updated when changes are made to the `private-site/` directory. This file is used to trigger the encryption script.
 
 #### 5. GitHub Actions
 
@@ -71,12 +70,6 @@ Build a public GitHub Pages-hosted site that displays a passphrase prompt. When 
     *   Fetch and decrypt `encrypted-site.bin`
     *   Replace full DOM with decrypted content
     *   Cache it in `localStorage`
-
-#### 🧷 Pre-Commit Hook
-
-*   Only runs when `private-site-version.txt` changes
-*   If encryption fails or passphrase is missing, the commit is blocked
-*   If successful, encrypted output is staged with `git add`
 
 #### 🛰️ GitHub Actions
 
@@ -119,8 +112,8 @@ Build a public GitHub Pages-hosted site that displays a passphrase prompt. When 
 *   **Status:** Done
 
 #### 🧷 Pre-Commit Hook
-*   **Task:** Add pre-commit hook in `.git/hooks/`.
-*   **Status:** In Progress (chmod failed, testing execution)
+*   **Task:** Pre-commit hook functionality has been removed.
+*   **Status:** Removed
 
 #### 🚀 GitHub Action
 *   **Task:** Write `deploy.yml` workflow.
