@@ -38,6 +38,7 @@ Build a public GitHub Pages-hosted site that displays a passphrase prompt. When 
 *   `.git/hooks/pre-commit`: Runs encryption script before every commit that includes changes to `/private-site/`
 *   `.env`: Contains `ENCRYPTION_PASSPHRASE`
 *   `.env.example`: Template file for `.env`
+*   `private-site-version.txt`: A file containing an integer. This file should be manually updated when changes are made to the `private-site/` directory. This file is used to trigger the pre-commit hook.
 
 #### 5. GitHub Actions
 
@@ -72,7 +73,7 @@ Build a public GitHub Pages-hosted site that displays a passphrase prompt. When 
 
 #### 🧷 Pre-Commit Hook
 
-*   Only runs when files in `/private-site/` change
+*   Only runs when `private-site-version.txt` changes
 *   If encryption fails or passphrase is missing, the commit is blocked
 *   If successful, encrypted output is staged with `git add`
 
