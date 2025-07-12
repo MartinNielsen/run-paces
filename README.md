@@ -37,6 +37,9 @@ To update your private site content and deploy it:
 
 ## Local Development
 
+To start gemini-cli, run
+$env:GEMINI_API_KEY="<THE_API_KEY>"; npx https://github.com/google-gemini/gemini-cli
+
 To test the public site locally:
 
 1.  Navigate to the `public-site/` directory:
