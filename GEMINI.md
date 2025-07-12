@@ -37,7 +37,7 @@ Build a public GitHub Pages-hosted site that displays a passphrase prompt. When 
 
 *   `.env`: Contains `ENCRYPTION_PASSPHRASE`
 *   `.env.example`: Template file for `.env`
-*   `private-site-version.txt`: A file containing an integer. This file should be manually updated when changes are made to the `private-site/` directory. This file is used to trigger the encryption script.
+
 
 #### 5. GitHub Actions
 

@@ -16,9 +16,7 @@ To update your private site content and deploy it:
 
 1.  **Update Private Content:** Make any desired changes to the files within the `private-site/` directory.
 
-2.  **Update Version:** Increment the integer in `private-site-version.txt`. This file acts as a manual trigger for the encryption process and helps with client-side cache invalidation.
-
-3.  **Run Encryption Script:** From the root of your repository, execute the encryption script:
+2.  **Run Encryption Script:** From the root of your repository, execute the encryption script:
     ```bash
     node scripts/encrypt-and-inject.js
     ```
@@ -28,7 +26,7 @@ To update your private site content and deploy it:
     *   Generate `public-site/encrypted-site.meta.json` with a new timestamp.
     *   Automatically stage these generated files for commit.
 
-4.  **Commit and Push:** Commit your changes (including the updated `private-site-version.txt` and the newly generated `encrypted-site.bin` and `encrypted-site.meta.json`) and push to your `main` branch:
+3.  **Commit and Push:** Commit your changes (including the newly generated `encrypted-site.bin` and `encrypted-site.meta.json`) and push to your `main` branch:
     ```bash
     git add .
     git commit -m "Update private site content"
