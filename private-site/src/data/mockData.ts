@@ -2,7 +2,7 @@ import { Activity } from '../types/activity';
 
 export const mockActivities: Activity[] = [
   {
-    type: 'Run2',
+    type: 'Running',
     coordinates: [
       [55.6761, 12.5683],
       [55.6770, 12.5690],
