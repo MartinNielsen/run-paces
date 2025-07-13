@@ -30,11 +30,12 @@ const Controls = ({
   return (
     <Box className="controls-container" sx={{
       position: 'absolute',
-      bottom: '2vh', // Position using viewport height
+      bottom: '15px', // Use a safe, fixed pixel value
       left: '50%',
       transform: 'translateX(-50%)',
-      width: '85%',
-      p: 1.5, // Apply some padding
+      width: '90%', // Make wider for better slider control
+      py: 1,        // Minimal vertical padding
+      px: 2,        // Horizontal padding
       borderRadius: 2,
       boxShadow: 3,
       zIndex: 1000,
@@ -43,7 +44,7 @@ const Controls = ({
       justifyContent: 'center',
       boxSizing: 'border-box',
     }}>
-      <Typography variant="caption" sx={{ fontWeight: 'bold', lineHeight: 1 }}>
+      <Typography variant="caption" sx={{ fontWeight: 'bold', textAlign: 'left' }}>
         Time Range
       </Typography>
       <Slider
@@ -55,9 +56,9 @@ const Controls = ({
         min={minTime}
         max={maxTime}
         valueLabelFormat={(value) => new Date(value).toLocaleString()}
-        sx={{ mt: -0.5, mb: 1 }} // Negative top margin, positive bottom margin
+        sx={{ mt: -1 }} // Aggressive negative margin to pull slider up
       />
-      <Typography variant="caption" sx={{ fontWeight: 'bold', lineHeight: 1 }}>
+      <Typography variant="caption" sx={{ fontWeight: 'bold', textAlign: 'left', mt: 1 }}>
         Current Time
       </Typography>
       <Slider
@@ -68,7 +69,7 @@ const Controls = ({
         min={timeRange[0]}
         max={timeRange[1]}
         valueLabelFormat={(value) => new Date(value).toLocaleString()}
-        sx={{ mt: -0.5 }} // Negative top margin
+        sx={{ mt: -1 }} // Aggressive negative margin
       />
     </Box>
   );
