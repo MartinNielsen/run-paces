@@ -2,7 +2,6 @@ venv/
 .env
 
 # Ignore the private site content
-private-site/
 
 # Ignore node_modules
 node_modules/
