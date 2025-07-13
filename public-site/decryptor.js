@@ -6,13 +6,19 @@ const errorP = document.getElementById('error');
 const encryptedSitePath = 'encrypted-site.bin';
 const metaPath = 'encrypted-site.meta.json';
 
+function injectContent(content) {
+  document.open();
+  document.write(content);
+  document.close();
+}
+
 async function main() {
   const meta = await (await fetch(metaPath)).json();
   const cachedVersion = localStorage.getItem('decrypted-site-version');
 
   if (cachedVersion === meta.version) {
     const decryptedContent = localStorage.getItem('decrypted-site-content');
-    document.write(decryptedContent);
+    injectContent(decryptedContent);
     return;
   }
 
@@ -30,8 +36,9 @@ async function main() {
       localStorage.setItem('decrypted-site-version', meta.version);
       localStorage.setItem('decrypted-site-content', decryptedContent);
 
-      document.write(decryptedContent);
+      injectContent(decryptedContent);
     } catch (e) {
+      console.error(e);
       errorP.textContent = 'Wrong passphrase.';
     }
   });
