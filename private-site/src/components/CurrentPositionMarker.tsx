@@ -26,11 +26,6 @@ const CurrentPositionMarker = ({ position }: CurrentPositionMarkerProps) => {
     return null;
   }
 
-  // This log will now only show when the parent decides to render it with a new position.
-  if (Array.isArray(position)) {
-    console.log(`[Marker] Rendering at new position: [${position[0]}, ${position[1]}]`);
-  }
-
   return (
     <Marker position={position} icon={customIcon}>
       <Popup>Current Position</Popup>

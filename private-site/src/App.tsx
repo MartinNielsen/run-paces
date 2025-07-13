@@ -59,7 +59,6 @@ function App() {
   const [currentPosition, setCurrentPosition] = useState<LatLngExpression | null>(null);
 
   useEffect(() => {
-    console.log(`[App] useEffect triggered for currentTime: ${new Date(currentTime).toISOString()}`);
     let pos: LatLngExpression | null = null;
     for (const activity of garminActivities) {
       const timeIndex = activity.timestamps.findIndex((t, i) => {
@@ -84,9 +83,6 @@ function App() {
         }
         break;
       }
-    }
-    if (pos && Array.isArray(pos)) {
-      console.log(`[App] Calculated new position: [${pos[0]}, ${pos[1]}]`);
     }
     setCurrentPosition(pos);
   }, [currentTime]);
