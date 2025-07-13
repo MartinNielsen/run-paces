@@ -12,10 +12,16 @@ interface MapProps {
   bounds: LatLngBoundsExpression;
 }
 
-const activityColor = {
+const activityColor: { [key: string]: string } = {
   Run: 'red',
   Hike: 'green',
   Cycle: 'blue',
+  Walking: 'purple',
+  Rucking: 'brown',
+};
+
+const getActivityColor = (type: string) => {
+  return activityColor[type] || 'black'; // Default to black for unknown types
 };
 
 const MapEvents = ({ onZoomEnd }: { onZoomEnd: (zoom: number) => void }) => {
@@ -76,7 +82,7 @@ const Map = ({ activities, timeRange, currentTime, bounds }: MapProps) => {
         <Polyline
           key={index}
           positions={activity.coordinates}
-          color={activityColor[activity.type]}
+          color={getActivityColor(activity.type)}
         />
       ))}
       {currentPosition && (

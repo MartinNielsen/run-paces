@@ -1,4 +1,4 @@
 garth
 python-dotenv
 matplotlib
-numpy 
+numpy

@@ -2,14 +2,14 @@ import { useState, useMemo } from 'react';
 import 'leaflet/dist/leaflet.css';
 import Map from './components/Map';
 import Controls from './components/Controls';
-import { mockActivities } from './data/mockData';
+import { garminActivities } from './data/garminData';
 import './App.css';
 import { LatLngBoundsExpression } from 'leaflet';
 
 function App() {
   const { minTime, maxTime, bounds } = useMemo(() => {
-    const allTimestamps = mockActivities.flatMap(a => a.timestamps);
-    const allCoords = mockActivities.flatMap(a => a.coordinates);
+    const allTimestamps = garminActivities.flatMap(a => a.timestamps);
+    const allCoords = garminActivities.flatMap(a => a.coordinates);
     const minLat = Math.min(...allCoords.map(c => c[0]));
     const maxLat = Math.max(...allCoords.map(c => c[0]));
     const minLng = Math.min(...allCoords.map(c => c[1]));
@@ -28,7 +28,7 @@ function App() {
   return (
     <div className="App">
       <Map
-        activities={mockActivities}
+        activities={garminActivities}
         timeRange={timeRange}
         currentTime={currentTime}
         bounds={bounds}

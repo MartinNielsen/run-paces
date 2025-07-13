@@ -1,61 +1,56 @@
 import garth
 import os
+import json
 from dotenv import load_dotenv
-import matplotlib.pyplot as plt
-import numpy as np
 from pathlib import Path
 
 # Load environment variables from .env file
 load_dotenv()
 
-def get_pace_per_km(laps):
-    """Calculate pace in minutes per kilometer for each lap."""
-    pace_per_km = []
-    for lap in laps:
-        # Assuming each lap is roughly 1km
-        if 950 < lap['distance'] < 1050:
-            duration_min = lap['duration'] / 60.0
-            pace_per_km.append(duration_min)
-    return pace_per_km
+def format_activity_for_ts(activity_details, activity_summary):
+    """Formats a single activity into a TypeScript-ready dictionary."""
+    
+    metric_descriptors = {descriptor["key"]: descriptor["metricsIndex"] for descriptor in activity_details.get("metricDescriptors", [])}
+    
+    # Check if we have the required keys for coordinates and time
+    if not all(k in metric_descriptors for k in ["directLatitude", "directLongitude", "directTimestamp"]):
+        return None
 
-def generate_chart(pace_data, filename, activity):
-    """Generate and save a bar chart of the pace data."""
-    if not pace_data:
-        print("No 1km lap data found to generate a chart.")
-        return
+    lat_idx = metric_descriptors["directLatitude"]
+    lon_idx = metric_descriptors["directLongitude"]
+    time_idx = metric_descriptors["directTimestamp"]
 
-    labels = [f"{i+1} km" for i in range(len(pace_data))]
+    coordinates = []
+    timestamps = []
 
-    plt.style.use('ggplot')
-    fig, ax = plt.subplots(figsize=(10, 6))
+    for item in activity_details.get("activityDetailMetrics", []):
+        metrics = item.get("metrics", [])
+        # Ensure the metrics list is long enough and contains non-null lat/lon
+        if len(metrics) > max(lat_idx, lon_idx, time_idx) and metrics[lat_idx] is not None and metrics[lon_idx] is not None:
+            coordinates.append([metrics[lat_idx], metrics[lon_idx]])
+            timestamps.append(metrics[time_idx])
 
-    ax.bar(labels, pace_data, color='skyblue')
+    if not coordinates:
+        return None
 
-    ax.set_ylabel('Pace (min/km)')
-    ax.set_xlabel('Distance (km)')
-    start_time = activity.get("startTimeLocal", "Unknown Time")
-    ax.set_title(f'Pace per Kilometer for Run on {start_time}')
+    activity_type = activity_summary.get("activityType", {}).get("typeKey", "unknown")
+    formatted_type = activity_type.capitalize()
 
-    # Add pace values on top of bars
-    for i, pace in enumerate(pace_data):
-        ax.text(i, pace + 0.05, f'{pace:.2f}', ha='center', color='black')
-
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close(fig)  # Close the figure to free up memory
-    print(f"Saved chart as {filename}")
+    return {
+        "type": formatted_type,
+        "coordinates": coordinates,
+        "timestamps": timestamps,
+    }
 
 def main():
-    """Main function to fetch data and generate chart."""
+    """Main function to fetch data and generate the TypeScript data file."""
 
     token_file = Path.home() / ".garth"
 
     try:
-        # Try to resume a session
         garth.resume(str(token_file))
         print(f"Successfully resumed session for {garth.client.username}")
     except Exception:
-        # If resume fails, login
         print("No valid session found. Logging in...")
         email = os.getenv('GARMIN_USERNAME')
         password = os.getenv('GARMIN_PASSWORD')
@@ -65,7 +60,6 @@ def main():
             return
 
         try:
-            # This will prompt for MFA if it's enabled and not already handled
             garth.login(email, password)
             garth.save(str(token_file))
             print(f"Successfully logged in as {garth.client.username}")
@@ -73,63 +67,55 @@ def main():
             print(f"Login failed: {e}")
             return
 
-    # Fetch recent running activities
-    print("Fetching recent running activities...")
+    print("Fetching recent activities...")
     from datetime import date, timedelta
     today = date.today()
     ninety_days_ago = today - timedelta(days=90)
 
     activities = garth.connectapi(
         "/activitylist-service/activities/search/activities",
-        params={
-            "limit": 20,
-            "startDate": str(ninety_days_ago),
-            "activityType": "running"
-        }
+        params={"limit": 20, "startDate": str(ninety_days_ago)}
     )
+
     if not activities:
         print("No activities found in the last 90 days.")
         return
-        
-    running_activities = [
-        act for act in activities
-        if act.get("activityType", {}).get("typeKey") == "running"
-    ]
 
-    if not running_activities:
-        print("No running activities found in the last 90 days.")
-        return
+    print(f"Found {len(activities)} activities. Fetching details...")
 
-    print(f"Found {len(running_activities)} running activities in the last 90 days.")
-
-    # Process each running activity
-    for activity in running_activities:
+    all_formatted_activities = []
+    for activity in activities:
         activity_id = activity['activityId']
-        filename = f"activity_{activity_id}.png"
+        print(f"Processing activity {activity_id}...")
 
-        if Path(filename).exists():
-            print(f"Chart '{filename}' already exists. Skipping.")
-            continue
+        try:
+            details = garth.connectapi(
+                f"/activity-service/activity/{activity_id}/details"
+            )
 
-        print(f"Processing new activity: {activity_id} from {activity.get('startTimeLocal', 'N/A')}")
+            formatted_activity = format_activity_for_ts(details, activity)
+            
+            if formatted_activity:
+                all_formatted_activities.append(formatted_activity)
+                print(f"  -> Successfully processed activity {activity_id}.")
+            else:
+                print(f"  -> Skipping activity {activity_id} due to missing or invalid GPS data.")
 
-        # Fetch detailed data (laps) for the activity
-        laps = garth.connectapi(
-            f"/activity-service/activity/{activity_id}/splits"
-        )
+        except Exception as e:
+            print(f"  -> ERROR processing activity {activity_id}: {e}")
 
-        if not laps or 'lapDTOs' not in laps:
-            print(f"Could not retrieve laps for activity {activity_id}.")
-            continue
+    output_path = Path(__file__).parent.parent / "private-site" / "src" / "data" / "garminData.ts"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        pace_data = get_pace_per_km(laps['lapDTOs'])
+    with open(output_path, "w") as f:
+        f.write("import { Activity } from '../types/activity';\n")
+        f.write("export const garminActivities: Activity[] = ")
+        f.write(json.dumps(all_formatted_activities, indent=2))
+        f.write(";\n")
 
-        if not pace_data:
-            print(f"No 1km lap data found for activity {activity_id}.")
-            continue
-
-        generate_chart(pace_data, filename, activity)
-
+    print(f"\nSuccessfully wrote {len(all_formatted_activities)} activities to {output_path}")
 
 if __name__ == "__main__":
-    main() 
+    main()
+
+ 
