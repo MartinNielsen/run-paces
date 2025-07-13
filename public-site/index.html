@@ -24,8 +24,10 @@
       background-color: var(--background-color);
       color: var(--on-surface-color);
       display: flex;
-      align-items: center;
+      align-items: flex-start; /* Changed from center */
       justify-content: center;
+      padding-top: 15vh; /* Added padding */
+      box-sizing: border-box; /* Added for better layout */
     }
 
     .prompt-container {
