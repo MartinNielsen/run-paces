@@ -1,9 +1,25 @@
-import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Polyline, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { useState } from 'react';
+import { MapContainer, TileLayer, Polyline, useMapEvents } from 'react-leaflet';
 import { Activity } from '../types/activity';
 import Legend from './Legend';
-import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';
+import { LatLngBoundsExpression, Icon } from 'leaflet';
 import useSimplifiedActivities from '../hooks/useSimplifiedActivities';
+import CurrentPositionMarker from './CurrentPositionMarker';
+
+// --- THE FOOLPROOF ICON FIX ---
+// By importing the images and overriding the default options, we ensure
+// the bundler uses the correct assets and Leaflet doesn't try to fetch them.
+import 'leaflet/dist/leaflet.css';
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+
+Icon.Default.mergeOptions({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+});
+// --- END OF FIX ---
 
 interface MapProps {
   activities: Activity[];
@@ -31,49 +47,6 @@ const MapEvents = ({ onZoomEnd }: { onZoomEnd: (zoom: number) => void }) => {
     },
   });
   return null;
-};
-
-const CurrentPositionMarker = ({ activities, currentTime }: { activities: Activity[], currentTime: number }) => {
-  const [position, setPosition] = useState<LatLngExpression | null>(null);
-
-  useEffect(() => {
-    let pos: LatLngExpression | null = null;
-    for (const activity of activities) {
-      const timeIndex = activity.timestamps.findIndex((t, i) => {
-        if (i === 0) return false;
-        const prevTimestamp = activity.timestamps[i - 1];
-        return currentTime >= prevTimestamp && currentTime <= t;
-      });
-
-      if (timeIndex > 0) {
-        const prevTimestamp = activity.timestamps[timeIndex - 1];
-        const nextTimestamp = activity.timestamps[timeIndex];
-        const prevCoord = activity.coordinates[timeIndex - 1];
-        const nextCoord = activity.coordinates[timeIndex];
-
-        if (nextTimestamp > prevTimestamp) {
-          const ratio = (currentTime - prevTimestamp) / (nextTimestamp - prevTimestamp);
-          const lat = prevCoord[0] + (nextCoord[0] - prevCoord[0]) * ratio;
-          const lng = prevCoord[1] + (nextCoord[1] - prevCoord[1]) * ratio;
-          pos = [lat, lng];
-        } else {
-          pos = prevCoord as LatLngExpression;
-        }
-        break; 
-      }
-    }
-    setPosition(pos);
-  }, [activities, currentTime]);
-
-  if (!position) {
-    return null;
-  }
-
-  return (
-    <Marker position={position}>
-      <Popup>You are here</Popup>
-    </Marker>
-  );
 };
 
 const Map = ({ activities, timeRange, currentTime, bounds }: MapProps) => {
