@@ -28,14 +28,12 @@ const Controls = ({
   };
 
   return (
-    <Box sx={{
+    <Box className="controls-container" sx={{
       position: 'absolute',
       bottom: '20px',
       left: '50%',
       transform: 'translateX(-50%)',
       width: '80%',
-      height: '30vh', // Set a specific viewport height
-      maxHeight: '250px', // But don't let it get too tall on large screens
       bgcolor: 'background.paper',
       p: 2,
       pt: 3, // Add more padding to the top
