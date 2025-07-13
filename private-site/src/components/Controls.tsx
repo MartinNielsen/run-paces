@@ -2,27 +2,27 @@ import { Slider, Box, Typography } from '@mui/material';
 
 interface ControlsProps {
   timeRange: [number, number];
-  setTimeRange: (value: [number, number]) => void;
+  onTimeRangeChange: (value: [number, number]) => void;
   currentTime: number;
-  setCurrentTime: (value: number) => void;
+  onCurrentTimeChange: (value: number) => void;
   minTime: number;
   maxTime: number;
 }
 
 const Controls = ({
   timeRange,
-  setTimeRange,
+  onTimeRangeChange,
   currentTime,
-  setCurrentTime,
+  onCurrentTimeChange,
   minTime,
   maxTime,
 }: ControlsProps) => {
   const handleTimeRangeChange = (_event: Event, newValue: number | number[]) => {
-    setTimeRange(newValue as [number, number]);
+    onTimeRangeChange(newValue as [number, number]);
   };
 
   const handleCurrentTimeChange = (_event: Event, newValue: number | number[]) => {
-    setCurrentTime(newValue as number);
+    onCurrentTimeChange(newValue as number);
   };
 
   return (

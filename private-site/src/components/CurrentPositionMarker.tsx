@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import { LatLngExpression, Icon } from 'leaflet';
-import { Activity } from '../types/activity';
 
 // --- Direct Icon Import & Creation ---
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
@@ -20,60 +18,22 @@ const customIcon = new Icon({
 // --- End of Fix ---
 
 interface CurrentPositionMarkerProps {
-  activities: Activity[];
-  currentTime: number;
+  position: LatLngExpression | null;
 }
 
-const CurrentPositionMarker = ({ activities, currentTime }: CurrentPositionMarkerProps) => {
-  const [position, setPosition] = useState<LatLngExpression | null>(null);
-
-  // --- DEBUG LOGGING ---
-  console.log(`[Marker] Received currentTime: ${new Date(currentTime).toISOString()}`);
-
-  useEffect(() => {
-    let pos: LatLngExpression | null = null;
-    for (const activity of activities) {
-      const timeIndex = activity.timestamps.findIndex((t, i) => {
-        if (i === 0) return false;
-        const prevTimestamp = activity.timestamps[i - 1];
-        return currentTime >= prevTimestamp && currentTime <= t;
-      });
-
-      if (timeIndex > 0) {
-        const prevTimestamp = activity.timestamps[timeIndex - 1];
-        const nextTimestamp = activity.timestamps[timeIndex];
-        const prevCoord = activity.coordinates[timeIndex - 1];
-        const nextCoord = activity.coordinates[timeIndex];
-
-        if (nextTimestamp > prevTimestamp) {
-          const ratio = (currentTime - prevTimestamp) / (nextTimestamp - prevTimestamp);
-          const lat = prevCoord[0] + (nextCoord[0] - prevCoord[0]) * ratio;
-          const lng = prevCoord[1] + (nextCoord[1] - prevCoord[1]) * ratio;
-          pos = [lat, lng];
-        } else {
-          pos = prevCoord as LatLngExpression;
-        }
-        break;
-      }
-    }
-    
-    // --- DEBUG LOGGING ---
-    if (pos) {
-      console.log(`[Marker] Calculated new position: [${pos[0]}, ${pos[1]}]`);
-    } else {
-      console.log('[Marker] Position is outside the current track segment.');
-    }
-    
-    setPosition(pos);
-  }, [activities, currentTime]);
-
+const CurrentPositionMarker = ({ position }: CurrentPositionMarkerProps) => {
   if (!position) {
     return null;
   }
 
+  // This log will now only show when the parent decides to render it with a new position.
+  if (Array.isArray(position)) {
+    console.log(`[Marker] Rendering at new position: [${position[0]}, ${position[1]}]`);
+  }
+
   return (
     <Marker position={position} icon={customIcon}>
-      <Popup>You are here</Popup>
+      <Popup>Current Position</Popup>
     </Marker>
   );
 };

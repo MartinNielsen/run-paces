@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MapContainer, TileLayer, Polyline, useMapEvents } from 'react-leaflet';
 import { Activity } from '../types/activity';
 import Legend from './Legend';
-import { LatLngBoundsExpression } from 'leaflet';
+import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
 import useSimplifiedActivities from '../hooks/useSimplifiedActivities';
 import CurrentPositionMarker from './CurrentPositionMarker';
 import 'leaflet/dist/leaflet.css';
@@ -10,8 +10,8 @@ import 'leaflet/dist/leaflet.css';
 interface MapProps {
   activities: Activity[];
   timeRange: [number, number];
-  currentTime: number;
   bounds: LatLngBoundsExpression;
+  currentPosition: LatLngExpression | null;
 }
 
 const activityColor: { [key: string]: string } = {
@@ -35,7 +35,7 @@ const MapEvents = ({ onZoomEnd }: { onZoomEnd: (zoom: number) => void }) => {
   return null;
 };
 
-const Map = ({ activities, timeRange, currentTime, bounds }: MapProps) => {
+const Map = ({ activities, timeRange, bounds, currentPosition }: MapProps) => {
   const [zoom, setZoom] = useState(13);
   const simplifiedActivities = useSimplifiedActivities(activities, zoom);
 
@@ -79,7 +79,7 @@ const Map = ({ activities, timeRange, currentTime, bounds }: MapProps) => {
           color={getActivityColor(activity.type)}
         />
       ))}
-      <CurrentPositionMarker activities={simplifiedActivities} currentTime={currentTime} />
+      <CurrentPositionMarker position={currentPosition} />
     </MapContainer>
   );
 };

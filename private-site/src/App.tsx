@@ -1,16 +1,15 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import Map from './components/Map';
 import Controls from './components/Controls';
 import { garminActivities } from './data/garminData';
 import './App.css';
-import { LatLngBoundsExpression } from 'leaflet';
+import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
 import { useShake } from './hooks/useShake';
 import { Fab, Tooltip } from '@mui/material';
 import ScreenRotationIcon from '@mui/icons-material/ScreenRotation';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-// Define the type for the DeviceMotionEvent with the requestPermission method
 interface DeviceMotionEventWithPermission extends DeviceMotionEvent {
   requestPermission?: () => Promise<'granted' | 'denied'>;
 }
@@ -19,7 +18,6 @@ function App() {
   const [sensorPermission, setSensorPermission] = useState<'prompt' | 'granted' | 'denied'>('prompt');
 
   const handleLogout = useCallback(() => {
-    // Clear localStorage and reload the page
     localStorage.clear();
     window.location.reload();
   }, []);
@@ -31,17 +29,12 @@ function App() {
     if (typeof requestPermission === 'function') {
       try {
         const permissionState = await requestPermission();
-        if (permissionState === 'granted') {
-          setSensorPermission('granted');
-        } else {
-          setSensorPermission('denied');
-        }
+        setSensorPermission(permissionState === 'granted' ? 'granted' : 'denied');
       } catch (error) {
         console.error('Sensor permission request failed', error);
         setSensorPermission('denied');
       }
     } else {
-      // If the API doesn't exist, we assume permission is granted (for non-iOS 13+ browsers)
       setSensorPermission('granted');
     }
   };
@@ -63,79 +56,82 @@ function App() {
 
   const [timeRange, setTimeRange] = useState<[number, number]>([minTime, maxTime]);
   const [currentTime, setCurrentTime] = useState<number>(minTime);
+  const [currentPosition, setCurrentPosition] = useState<LatLngExpression | null>(null);
 
-  // Clamp currentTime to the selected timeRange
   useEffect(() => {
-    if (currentTime < timeRange[0]) {
-      setCurrentTime(timeRange[0]);
+    console.log(`[App] useEffect triggered for currentTime: ${new Date(currentTime).toISOString()}`);
+    let pos: LatLngExpression | null = null;
+    for (const activity of garminActivities) {
+      const timeIndex = activity.timestamps.findIndex((t, i) => {
+        if (i === 0) return false;
+        const prevTimestamp = activity.timestamps[i - 1];
+        return currentTime >= prevTimestamp && currentTime <= t;
+      });
+
+      if (timeIndex > 0) {
+        const prevTimestamp = activity.timestamps[timeIndex - 1];
+        const nextTimestamp = activity.timestamps[timeIndex];
+        const prevCoord = activity.coordinates[timeIndex - 1];
+        const nextCoord = activity.coordinates[timeIndex];
+
+        if (nextTimestamp > prevTimestamp) {
+          const ratio = (currentTime - prevTimestamp) / (nextTimestamp - prevTimestamp);
+          const lat = prevCoord[0] + (nextCoord[0] - prevCoord[0]) * ratio;
+          const lng = prevCoord[1] + (nextCoord[1] - prevCoord[1]) * ratio;
+          pos = [lat, lng];
+        } else {
+          pos = prevCoord as LatLngExpression;
+        }
+        break;
+      }
     }
-    if (currentTime > timeRange[1]) {
-      setCurrentTime(timeRange[1]);
+    if (pos && Array.isArray(pos)) {
+      console.log(`[App] Calculated new position: [${pos[0]}, ${pos[1]}]`);
     }
-  }, [timeRange, currentTime]);
+    setCurrentPosition(pos);
+  }, [currentTime]);
+
+  const handleCurrentTimeChange = (newTime: number) => {
+    setCurrentTime(newTime);
+  };
+  
+  const handleTimeRangeChange = (newRange: [number, number]) => {
+    setTimeRange(newRange);
+    if (currentTime < newRange[0] || currentTime > newRange[1]) {
+      setCurrentTime(newRange[0]);
+    }
+  };
 
   return (
     <div className="App">
       {isCalibrating && (
-        <div style={{
-          position: 'absolute',
-          top: 16,
-          left: 16,
-          zIndex: 1001,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          color: 'white',
-          padding: '8px 12px',
-          borderRadius: '8px',
-          fontFamily: 'sans-serif',
-          fontSize: '14px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
-        }}>
+        <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 1001, backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white', padding: '8px 12px', borderRadius: '8px' }}>
           Calibrating sensors...
         </div>
       )}
       {sensorPermission === 'prompt' && (
         <Tooltip title="Enable Shake-to-Reset">
-          <Fab
-            color="primary"
-            aria-label="enable shake to reset"
-            style={{
-              position: 'absolute',
-              top: 16,
-              right: 16,
-              zIndex: 1000,
-            }}
-            onClick={requestSensorPermission}
-          >
+          <Fab color="primary" aria-label="enable shake to reset" style={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }} onClick={requestSensorPermission}>
             <ScreenRotationIcon />
           </Fab>
         </Tooltip>
       )}
       <Tooltip title="Logout and clear data">
-        <Fab
-          color="secondary"
-          aria-label="logout"
-          style={{
-            position: 'absolute',
-            bottom: 16,
-            right: 16,
-            zIndex: 1000,
-          }}
-          onClick={handleLogout}
-        >
+        <Fab color="secondary" aria-label="logout" style={{ position: 'absolute', bottom: 16, right: 16, zIndex: 1000 }} onClick={handleLogout}>
           <DeleteIcon />
         </Fab>
       </Tooltip>
       <Map
         activities={garminActivities}
         timeRange={timeRange}
-        currentTime={currentTime}
         bounds={bounds}
+        currentPosition={currentPosition}
       />
       <Controls
         timeRange={timeRange}
-        setTimeRange={setTimeRange}
+        onTimeRangeChange={handleTimeRangeChange}
         currentTime={currentTime}
-        setCurrentTime={setCurrentTime}
+        onCurrentTimeChange={handleCurrentTimeChange}
         minTime={minTime}
         maxTime={maxTime}
       />
