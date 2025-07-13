@@ -113,27 +113,27 @@ The directory contains the starter tech stack from https://github.com/R35007/vit
 It contains "A simple vite react typescript starter template with husky, conventional commit, eslint, stylelint, prettier, sass, tailwindcss, material ui, tanstack routing, redux and saga, vitest and cypress"
 
 *   [x] **1.1: Project Setup**
-    *   [] Install and configure your preferred linter and other tools to help you automatically detect and fix bugs.
-*   [ ] **1.2: Map and UI Components**
-    *   [ ] Install `react-leaflet`, `leaflet`, `@mui/material`, `@emotion/react`, `@emotion/styled`.
-    *   [ ] Set up a basic map component with zoom/pan.
-    *   [ ] Create a component to render activity polylines with correct colors.
-    *   [ ] Build the legend component.
-    *   [ ] Implement the timespan slider using Material UI `Slider`.
-    *   [ ] Implement the progress timeline dot.
-*   [ ] **1.3: Mock Data & Simplification**
-    *   [ ] Create mock data files for different activities.
-    *   [ ] Load and display mock data on the map.
-    *   [ ] Install `simplify-js`.
-    *   [ ] Implement dynamic simplification logic based on map zoom events.
+    *   [x] Install and configure your preferred linter and other tools to help you automatically detect and fix bugs.
+*   [x] **1.2: Map and UI Components**
+    *   [x] Install `react-leaflet`, `leaflet`, `@mui/material`, `@emotion/react`, `@emotion/styled`.
+    *   [x] Set up a basic map component with zoom/pan.
+    *   [x] Create a component to render activity polylines with correct colors.
+    *   [x] Build the legend component.
+    *   [x] Implement the timespan slider using Material UI `Slider`.
+    *   [x] Implement the progress timeline dot.
+*   [x] **1.3: Mock Data & Simplification**
+    *   [x] Create mock data files for different activities.
+    *   [x] Load and display mock data on the map.
+    *   [x] Install `simplify-js`.
+    *   [x] Implement dynamic simplification logic based on map zoom events.
 
 #### Phase 2: Build & Encryption
 
-*   [ ] **2.1: Single-File Build**
-    *   [ ] Configure Vite (or other bundler) to output a single bundled HTML file.
+*   [x] **2.1: Single-File Build**
+    *   [x] Configure Vite (or other bundler) to output a single bundled HTML file.
 *   [x] **2.2: Encryption Script**
     *   [x] Review and confirm `scripts/encrypt-and-inject.js` meets requirements.
-    *   [ ] Install `crypto-js` or similar if not already present.
+    *   [x] Install `crypto-js` or similar if not already present.
     *   [x] Ensure the script correctly encrypts the bundled file from `private-site/dist`.
 
 #### Phase 3: Public Site & Deployment
@@ -145,9 +145,9 @@ It contains "A simple vite react typescript starter template with husky, convent
 
 #### Phase 4: Final Testing
 
-*   [ ] **4.1: End-to-End Test**
-    *   [ ] Run the encryption script.
-    *   [ ] Commit the encrypted files.
-    *   [ ] Open `public-site/index.html` locally, enter passphrase, and verify the Garmin viewer loads and functions correctly.
+*   [x] **4.1: End-to-End Test**
+    *   [x] Run the encryption script.
+    *   [x] Commit the encrypted files.
+    *   [x] Open `public-site/index.html` locally, enter passphrase, and verify the Garmin viewer loads and functions correctly.
 *   [ ] **4.2: Cache Test**
     *   [ ] Verify cache versioning and update triggers work as expected.
