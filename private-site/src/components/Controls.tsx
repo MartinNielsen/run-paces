@@ -29,13 +29,13 @@ const Controls = ({
 
   return (
     <Box className="controls-container" sx={{
-      position: 'absolute',
-      bottom: '15px', // Use a safe, fixed pixel value
+      position: 'fixed', // Use 'fixed' to position relative to the viewport
+      bottom: '15px',
       left: '50%',
       transform: 'translateX(-50%)',
-      width: '90%', // Make wider for better slider control
-      py: 1,        // Minimal vertical padding
-      px: 2,        // Horizontal padding
+      width: '90%',
+      py: 1,
+      px: 2,
       borderRadius: 2,
       boxShadow: 3,
       zIndex: 1000,
@@ -56,7 +56,7 @@ const Controls = ({
         min={minTime}
         max={maxTime}
         valueLabelFormat={(value) => new Date(value).toLocaleString()}
-        sx={{ mt: -1 }} // Aggressive negative margin to pull slider up
+        sx={{ mt: -1 }}
       />
       <Typography variant="caption" sx={{ fontWeight: 'bold', textAlign: 'left', mt: 1 }}>
         Current Time
@@ -69,7 +69,7 @@ const Controls = ({
         min={timeRange[0]}
         max={timeRange[1]}
         valueLabelFormat={(value) => new Date(value).toLocaleString()}
-        sx={{ mt: -1 }} // Aggressive negative margin
+        sx={{ mt: -1 }}
       />
     </Box>
   );
