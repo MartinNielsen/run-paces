@@ -5,3 +5,4 @@ venv/
 
 # Ignore node_modules
 node_modules/
+private-site/src/data/garminData.ts

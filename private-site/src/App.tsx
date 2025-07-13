@@ -1,12 +1,21 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import 'leaflet/dist/leaflet.css';
 import Map from './components/Map';
 import Controls from './components/Controls';
 import { garminActivities } from './data/garminData';
 import './App.css';
 import { LatLngBoundsExpression } from 'leaflet';
+import { useShake } from './hooks/useShake';
 
 function App() {
+  const handleShake = useCallback(() => {
+    // Clear localStorage and reload the page
+    localStorage.clear();
+    window.location.reload();
+  }, []);
+
+  useShake(handleShake);
+
   const { minTime, maxTime, bounds } = useMemo(() => {
     const allTimestamps = garminActivities.flatMap(a => a.timestamps);
     const allCoords = garminActivities.flatMap(a => a.coordinates);
