@@ -34,7 +34,6 @@ const Controls = ({
       left: '50%',
       transform: 'translateX(-50%)',
       width: '80%',
-      bgcolor: 'background.paper',
       p: 2,
       pt: 3, // Add more padding to the top
       borderRadius: 1,
