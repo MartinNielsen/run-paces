@@ -57,6 +57,7 @@ function App() {
   const [timeRange, setTimeRange] = useState<[number, number]>([minTime, maxTime]);
   const [currentTime, setCurrentTime] = useState<number>(minTime);
   const [currentPosition, setCurrentPosition] = useState<LatLngExpression | null>(null);
+  const [viewBounds, setViewBounds] = useState<LatLngBoundsExpression>(bounds);
 
   useEffect(() => {
     let pos: LatLngExpression | null = null;
@@ -98,6 +99,24 @@ function App() {
     }
   };
 
+  const handleTimeRangeChangeCommitted = () => {
+    const coordsInRange = garminActivities
+      .flatMap(a => a.coordinates.filter((_, index) => {
+        const timestamp = a.timestamps[index];
+        return timestamp >= timeRange[0] && timestamp <= timeRange[1];
+      }));
+
+    if (coordsInRange.length > 0) {
+      const minLat = Math.min(...coordsInRange.map(c => c[0]));
+      const maxLat = Math.max(...coordsInRange.map(c => c[0]));
+      const minLng = Math.min(...coordsInRange.map(c => c[1]));
+      const maxLng = Math.max(...coordsInRange.map(c => c[1]));
+      setViewBounds([[minLat, minLng], [maxLat, maxLng]]);
+    } else {
+      setViewBounds(bounds); // Reset to overall bounds if no points are in range
+    }
+  };
+
   return (
     <div className="App">
       {isCalibrating && (
@@ -121,11 +140,13 @@ function App() {
         activities={garminActivities}
         timeRange={timeRange}
         bounds={bounds}
+        viewBounds={viewBounds}
         currentPosition={currentPosition}
       />
       <Controls
         timeRange={timeRange}
         onTimeRangeChange={handleTimeRangeChange}
+        onTimeRangeChangeCommitted={handleTimeRangeChangeCommitted}
         currentTime={currentTime}
         onCurrentTimeChange={handleCurrentTimeChange}
         minTime={minTime}

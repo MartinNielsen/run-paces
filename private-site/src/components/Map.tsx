@@ -5,12 +5,14 @@ import Legend from './Legend';
 import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
 import useSimplifiedActivities from '../hooks/useSimplifiedActivities';
 import CurrentPositionMarker from './CurrentPositionMarker';
+import MapUpdater from './MapUpdater';
 import 'leaflet/dist/leaflet.css';
 
 interface MapProps {
   activities: Activity[];
   timeRange: [number, number];
   bounds: LatLngBoundsExpression;
+  viewBounds: LatLngBoundsExpression;
   currentPosition: LatLngExpression | null;
 }
 
@@ -23,7 +25,7 @@ const activityColor: { [key: string]: string } = {
 };
 
 const getActivityColor = (type: string) => {
-  return activityColor[type] || 'black'; // Default to black for unknown types
+  return activityColor[type] || 'black';
 };
 
 const MapEvents = ({ onZoomEnd }: { onZoomEnd: (zoom: number) => void }) => {
@@ -35,32 +37,15 @@ const MapEvents = ({ onZoomEnd }: { onZoomEnd: (zoom: number) => void }) => {
   return null;
 };
 
-const Map = ({ activities, timeRange, bounds, currentPosition }: MapProps) => {
+const Map = ({ activities, timeRange, bounds, viewBounds, currentPosition }: MapProps) => {
   const [zoom, setZoom] = useState(13);
   const simplifiedActivities = useSimplifiedActivities(activities, zoom);
 
   const filteredActivities = simplifiedActivities.map(activity => {
-    const filteredIndices: number[] = [];
     const filteredCoords = activity.coordinates.filter((_, index) => {
       const timestamp = activity.timestamps[index];
-      const inRange = timestamp >= timeRange[0] && timestamp <= timeRange[1];
-      if (inRange) {
-        filteredIndices.push(index);
-      }
-      return inRange;
+      return timestamp >= timeRange[0] && timestamp <= timeRange[1];
     });
-
-    if (filteredIndices.length > 0) {
-        const firstVisibleIndex = filteredIndices[0];
-        if (firstVisibleIndex > 0) {
-            filteredCoords.unshift(activity.coordinates[firstVisibleIndex - 1]);
-        }
-        const lastVisibleIndex = filteredIndices[filteredIndices.length - 1];
-        if (lastVisibleIndex < activity.coordinates.length - 1) {
-            filteredCoords.push(activity.coordinates[lastVisibleIndex + 1]);
-        }
-    }
-    
     return { ...activity, coordinates: filteredCoords };
   });
 
@@ -71,6 +56,7 @@ const Map = ({ activities, timeRange, bounds, currentPosition }: MapProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       <MapEvents onZoomEnd={setZoom} />
+      <MapUpdater bounds={viewBounds} />
       <Legend />
       {filteredActivities.map((activity, index) => (
         <Polyline

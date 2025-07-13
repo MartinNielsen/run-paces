@@ -3,6 +3,7 @@ import { Slider, Box, Typography } from '@mui/material';
 interface ControlsProps {
   timeRange: [number, number];
   onTimeRangeChange: (value: [number, number]) => void;
+  onTimeRangeChangeCommitted: () => void;
   currentTime: number;
   onCurrentTimeChange: (value: number) => void;
   minTime: number;
@@ -12,6 +13,7 @@ interface ControlsProps {
 const Controls = ({
   timeRange,
   onTimeRangeChange,
+  onTimeRangeChangeCommitted,
   currentTime,
   onCurrentTimeChange,
   minTime,
@@ -44,6 +46,7 @@ const Controls = ({
       <Slider
         value={timeRange}
         onChange={handleTimeRangeChange}
+        onChangeCommitted={onTimeRangeChangeCommitted}
         valueLabelDisplay="auto"
         min={minTime}
         max={maxTime}
