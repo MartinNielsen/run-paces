@@ -1,69 +1,54 @@
-# React + TypeScript + Vite
+# Vite React Typescript Template
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple vite react typescript starter template with husky, conventional commit, eslint, stylelint, prettier, sass, tailwindcss, material ui, tanstack routing, redux and saga, vitest and cypress
 
-Currently, two official plugins are available:
+## [Trying this Online!](https://codesandbox.io/p/github/R35007/vite-react-typescript/main?file=%2FREADME.md)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![image](https://user-images.githubusercontent.com/23217228/235298200-28c7b4a6-0f92-420c-9410-b05d12de8eff.png)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+This template setup will include following features.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| ◼️  | Feature                                | Branch Name                |
+| --- | -------------------------------------- | :------------------------- |
+| ✅  | Generate Vite + React + Typescript App | feature/1/starter          |
+| ◼️  | Husky                                  | feature/2/husky            |
+| ◼️  | Conventional Commit                    | feature/3/commitlint       |
+| ◼️  | ESLint Airbnb Config and Plugins       | feature/4/eslint           |
+| ◼️  | StyleLint                              | feature/5/stylelint        |
+| ◼️  | Prettier format                        | feature/6/prettier         |
+| ◼️  | Lint Staged                            | feature/7/lint-staged      |
+| ◼️  | Sass + Tailwind css                    | feature/8/tailwindcss      |
+| ◼️  | Material UI                            | feature/9/material-ui      |
+| ◼️  | React Router Setup                     | feature/10/tanstack-router |
+| ◼️  | Redux + Redux Toolkit                  | feature/11/react-redux     |
+| ◼️  | Redux Saga                             | feature/12/react-saga      |
+| ◼️  | Vitest + RTL                           | feature/13/vitest          |
+| ◼️  | Cypress E2E Testing                    | feature/14/cypress         |
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# For full template
+npx degit R35007/vite-react-typescript#main myapp # main branch
+
+# For starter template
+npx degit R35007/vite-react-typescript#feature/1/starter myapp # feature/1/starter branch
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## NPM Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm run start                 # start development server
+npm run dev                   # start development server
+npm run build                 # build production bundle to 'dist' directly
+npm run preview               # start production server
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Lints
+npm run lint                  # run eslint
 ```
+
+# License
+
+MIT

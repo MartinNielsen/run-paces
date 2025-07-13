@@ -109,10 +109,11 @@ Notice - if you are gemini cli you are being run from a powershell on windows. T
 The project will be implemented in stages, starting with the private site development, followed by the integration with the encryption and deployment pipeline.
 
 #### Phase 1: Garmin Activity Viewer Development (`/private-site`)
+The directory contains the starter tech stack from https://github.com/R35007/vite-react-typescript/tree/feature/1/starter
+It contains "A simple vite react typescript starter template with husky, conventional commit, eslint, stylelint, prettier, sass, tailwindcss, material ui, tanstack routing, redux and saga, vitest and cypress"
 
-*   [ ] **1.1: Project Setup**
-    *   [ ] Initialize React + TypeScript project in `private-site/` using Vite.
-    *   [ ] Install and configure Tailwind CSS.
+*   [x] **1.1: Project Setup**
+    *   [] Install and configure your preferred linter and other tools to help you automatically detect and fix bugs.
 *   [ ] **1.2: Map and UI Components**
     *   [ ] Install `react-leaflet`, `leaflet`, `@mui/material`, `@emotion/react`, `@emotion/styled`.
     *   [ ] Set up a basic map component with zoom/pan.
@@ -130,17 +131,17 @@ The project will be implemented in stages, starting with the private site develo
 
 *   [ ] **2.1: Single-File Build**
     *   [ ] Configure Vite (or other bundler) to output a single bundled HTML file.
-*   [ ] **2.2: Encryption Script**
-    *   [ ] Review and confirm `scripts/encrypt-and-inject.js` meets requirements.
+*   [x] **2.2: Encryption Script**
+    *   [x] Review and confirm `scripts/encrypt-and-inject.js` meets requirements.
     *   [ ] Install `crypto-js` or similar if not already present.
-    *   [ ] Ensure the script correctly encrypts the bundled file from `private-site/dist`.
+    *   [x] Ensure the script correctly encrypts the bundled file from `private-site/dist`.
 
 #### Phase 3: Public Site & Deployment
 
-*   [ ] **3.1: Decryptor Page**
-    *   [ ] Review and confirm `public-site/decryptor.js` and `public-site/index.html` are complete.
-*   [ ] **3.2: GitHub Actions Deployment**
-    *   [ ] Review `deploy.yml` to ensure it correctly deploys the `public-site/` directory.
+*   [x] **3.1: Decryptor Page**
+    *   [x] Review and confirm `public-site/decryptor.js` and `public-site/index.html` are complete.
+*   [x] **3.2: GitHub Actions Deployment**
+    *   [x] Review `deploy.yml` to ensure it correctly deploys the `public-site/` directory.
 
 #### Phase 4: Final Testing
 
