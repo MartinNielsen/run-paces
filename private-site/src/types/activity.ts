@@ -1,5 +1,5 @@
 export interface Activity {
-  type: 'Running' | 'Hike' | 'Cycle';
+  type: 'Run' | 'Hike' | 'Cycle';
   coordinates: [number, number][];
   timestamps: number[];
 }
