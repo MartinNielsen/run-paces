@@ -9,8 +9,6 @@ interface MapProps {
   activities: Activity[];
   timeRange: [number, number];
   currentTime: number;
-  minTime: number;
-  maxTime: number;
   bounds: LatLngBoundsExpression;
 }
 
@@ -29,7 +27,7 @@ const MapEvents = ({ onZoomEnd }: { onZoomEnd: (zoom: number) => void }) => {
   return null;
 };
 
-const Map = ({ activities, timeRange, currentTime, minTime, maxTime, bounds }: MapProps) => {
+const Map = ({ activities, timeRange, currentTime, bounds }: MapProps) => {
   const [zoom, setZoom] = useState(13);
   const simplifiedActivities = useSimplifiedActivities(activities, zoom);
 

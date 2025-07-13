@@ -31,8 +31,6 @@ function App() {
         activities={mockActivities}
         timeRange={timeRange}
         currentTime={currentTime}
-        minTime={minTime}
-        maxTime={maxTime}
         bounds={bounds}
       />
       <Controls

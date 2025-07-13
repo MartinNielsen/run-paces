@@ -2,7 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const sjcl = require('sjcl');
 
-const privateSitePath = 'private-site/index.html';
+const privateSitePath = 'private-site/dist/index.html';
 const encryptedSitePath = 'public-site/encrypted-site.bin';
 const metaPath = 'public-site/encrypted-site.meta.json';
 

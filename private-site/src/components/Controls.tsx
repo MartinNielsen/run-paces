@@ -17,11 +17,11 @@ const Controls = ({
   minTime,
   maxTime,
 }: ControlsProps) => {
-  const handleTimeRangeChange = (event: Event, newValue: number | number[]) => {
+  const handleTimeRangeChange = (_event: Event, newValue: number | number[]) => {
     setTimeRange(newValue as [number, number]);
   };
 
-  const handleCurrentTimeChange = (event: Event, newValue: number | number[]) => {
+  const handleCurrentTimeChange = (_event: Event, newValue: number | number[]) => {
     setCurrentTime(newValue as number);
   };
 
