@@ -34,18 +34,17 @@ const Controls = ({
       left: '50%',
       transform: 'translateX(-50%)',
       width: '80%',
-      p: 2,
-      pt: 3, // Add more padding to the top
+      p: 1, // Reduced padding
       borderRadius: 1,
       boxShadow: 3,
       zIndex: 1000,
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center', // Center the items vertically
-      boxSizing: 'border-box', // Ensure padding is included in the height
+      justifyContent: 'center', // Keep it centered vertically
+      boxSizing: 'border-box',
     }}>
-      <Box>
-        <Typography id="range-slider" gutterBottom>
+      <Box sx={{ mb: 1 }}> {/* Add a small margin-bottom to this group */}
+        <Typography id="range-slider"> {/* Removed gutterBottom */}
           Time Range
         </Typography>
         <Slider
@@ -59,7 +58,7 @@ const Controls = ({
         />
       </Box>
       <Box>
-        <Typography id="current-time-slider" gutterBottom>
+        <Typography id="current-time-slider"> {/* Removed gutterBottom */}
           Current Time
         </Typography>
         <Slider
