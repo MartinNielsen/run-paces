@@ -24,7 +24,7 @@ function App() {
     window.location.reload();
   }, []);
 
-  useShake(handleLogout, 300);
+  const { isCalibrating } = useShake(handleLogout, 3);
 
   const requestSensorPermission = async () => {
     const requestPermission = (DeviceMotionEvent as unknown as DeviceMotionEventWithPermission).requestPermission;
@@ -66,6 +66,23 @@ function App() {
 
   return (
     <div className="App">
+      {isCalibrating && (
+        <div style={{
+          position: 'absolute',
+          top: 16,
+          left: 16,
+          zIndex: 1001,
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          color: 'white',
+          padding: '8px 12px',
+          borderRadius: '8px',
+          fontFamily: 'sans-serif',
+          fontSize: '14px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
+        }}>
+          Calibrating sensors...
+        </div>
+      )}
       {sensorPermission === 'prompt' && (
         <Tooltip title="Enable Shake-to-Reset">
           <Fab

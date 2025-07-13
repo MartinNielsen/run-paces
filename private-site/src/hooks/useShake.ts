@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 // Debounce function to limit the rate at which a function can fire.
 const debounce = <T extends (...args: any[]) => void>(func: T, delay: number) => {
@@ -11,8 +11,11 @@ const debounce = <T extends (...args: any[]) => void>(func: T, delay: number) =>
   };
 };
 
-export const useShake = (onShake: () => void, shakeThreshold = 10) => {
+export const useShake = (onShake: () => void, shakeFactor = 3, calibrationDuration = 3000) => {
   const [isShaking, setIsShaking] = useState(false);
+  const [isCalibrating, setIsCalibrating] = useState(true);
+  const [baselineGravity, setBaselineGravity] = useState<number | null>(null);
+  const magnitudes = useRef<number[]>([]).current;
 
   const handleDeviceMotion = useCallback(
     (event: DeviceMotionEvent) => {
@@ -26,21 +29,42 @@ export const useShake = (onShake: () => void, shakeThreshold = 10) => {
         return;
       }
 
-      const magnitude = Math.sqrt(x * x + y * y + z * z);
+      const currentMagnitude = Math.sqrt(x * x + y * y + z * z);
 
-      if (magnitude > shakeThreshold) {
-        setIsShaking(true);
+      if (isCalibrating) {
+        magnitudes.push(currentMagnitude);
+      } else if (baselineGravity) {
+        const shakeThreshold = baselineGravity * shakeFactor;
+        if (currentMagnitude > shakeThreshold) {
+          setIsShaking(true);
+        }
       }
     },
-    [shakeThreshold]
+    [isCalibrating, baselineGravity, shakeFactor, magnitudes]
   );
+
+  // Calibration effect
+  useEffect(() => {
+    const calibrationTimer = setTimeout(() => {
+      if (magnitudes.length > 0) {
+        const average = magnitudes.reduce((sum, val) => sum + val, 0) / magnitudes.length;
+        setBaselineGravity(average);
+      } else {
+        // Fallback for devices that don't report motion events quickly
+        setBaselineGravity(9.8); 
+      }
+      setIsCalibrating(false);
+      magnitudes.length = 0; // Clear the array
+    }, calibrationDuration);
+
+    return () => clearTimeout(calibrationTimer);
+  }, [calibrationDuration, magnitudes]);
 
   const debouncedOnShake = useCallback(debounce(onShake, 500), [onShake]);
 
   useEffect(() => {
     if (isShaking) {
       debouncedOnShake();
-      // Reset shaking state after a delay
       const timer = setTimeout(() => setIsShaking(false), 1000);
       return () => clearTimeout(timer);
     }
@@ -53,5 +77,5 @@ export const useShake = (onShake: () => void, shakeThreshold = 10) => {
     };
   }, [handleDeviceMotion]);
 
-  return isShaking;
+  return { isCalibrating };
 };
