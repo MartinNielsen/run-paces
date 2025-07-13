@@ -24,7 +24,7 @@ function App() {
     window.location.reload();
   }, []);
 
-  useShake(handleLogout, 100);
+  useShake(handleLogout, 300);
 
   const requestSensorPermission = async () => {
     const requestPermission = (DeviceMotionEvent as unknown as DeviceMotionEventWithPermission).requestPermission;
