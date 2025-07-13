@@ -1,7 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Marker, Popup } from 'react-leaflet';
-import { LatLngExpression } from 'leaflet';
+import { LatLngExpression, Icon } from 'leaflet';
 import { Activity } from '../types/activity';
+
+// --- Direct Icon Import & Creation ---
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+
+const customIcon = new Icon({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+// --- End of Fix ---
 
 interface CurrentPositionMarkerProps {
   activities: Activity[];
@@ -11,10 +27,12 @@ interface CurrentPositionMarkerProps {
 const CurrentPositionMarker = ({ activities, currentTime }: CurrentPositionMarkerProps) => {
   const [position, setPosition] = useState<LatLngExpression | null>(null);
 
+  // --- DEBUG LOGGING ---
+  console.log(`[Marker] Received currentTime: ${new Date(currentTime).toISOString()}`);
+
   useEffect(() => {
     let pos: LatLngExpression | null = null;
     for (const activity of activities) {
-      // Find the segment of the track where the currentTime falls
       const timeIndex = activity.timestamps.findIndex((t, i) => {
         if (i === 0) return false;
         const prevTimestamp = activity.timestamps[i - 1];
@@ -27,19 +45,25 @@ const CurrentPositionMarker = ({ activities, currentTime }: CurrentPositionMarke
         const prevCoord = activity.coordinates[timeIndex - 1];
         const nextCoord = activity.coordinates[timeIndex];
 
-        // Avoid division by zero
         if (nextTimestamp > prevTimestamp) {
           const ratio = (currentTime - prevTimestamp) / (nextTimestamp - prevTimestamp);
           const lat = prevCoord[0] + (nextCoord[0] - prevCoord[0]) * ratio;
           const lng = prevCoord[1] + (nextCoord[1] - prevCoord[1]) * ratio;
           pos = [lat, lng];
         } else {
-          // If timestamps are the same, just use the coordinate
           pos = prevCoord as LatLngExpression;
         }
-        break; // Found the position, no need to check other activities
+        break;
       }
     }
+    
+    // --- DEBUG LOGGING ---
+    if (pos) {
+      console.log(`[Marker] Calculated new position: [${pos[0]}, ${pos[1]}]`);
+    } else {
+      console.log('[Marker] Position is outside the current track segment.');
+    }
+    
     setPosition(pos);
   }, [activities, currentTime]);
 
@@ -48,7 +72,7 @@ const CurrentPositionMarker = ({ activities, currentTime }: CurrentPositionMarke
   }
 
   return (
-    <Marker position={position}>
+    <Marker position={position} icon={customIcon}>
       <Popup>You are here</Popup>
     </Marker>
   );

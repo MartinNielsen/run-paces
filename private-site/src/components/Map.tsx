@@ -2,24 +2,10 @@ import { useState } from 'react';
 import { MapContainer, TileLayer, Polyline, useMapEvents } from 'react-leaflet';
 import { Activity } from '../types/activity';
 import Legend from './Legend';
-import { LatLngBoundsExpression, Icon } from 'leaflet';
+import { LatLngBoundsExpression } from 'leaflet';
 import useSimplifiedActivities from '../hooks/useSimplifiedActivities';
 import CurrentPositionMarker from './CurrentPositionMarker';
-
-// --- THE FOOLPROOF ICON FIX ---
-// By importing the images and overriding the default options, we ensure
-// the bundler uses the correct assets and Leaflet doesn't try to fetch them.
 import 'leaflet/dist/leaflet.css';
-import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
-import iconUrl from 'leaflet/dist/images/marker-icon.png';
-import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
-
-Icon.Default.mergeOptions({
-  iconRetinaUrl,
-  iconUrl,
-  shadowUrl,
-});
-// --- END OF FIX ---
 
 interface MapProps {
   activities: Activity[];

@@ -1,0 +1,1 @@
+cd private-site/;npm run build; cd ..; source .env ;node  ./scripts/encrypt-and-inject.js ; git add . ; git commit -m "New version" ; git push
