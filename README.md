@@ -42,14 +42,10 @@ $env:GEMINI_API_KEY="<THE_API_KEY>"; npx https://github.com/google-gemini/gemini
 
 To test the public site locally:
 
-1.  Navigate to the `public-site/` directory:
+1.  From the root, run:
     ```bash
-    cd public-site
+    npx http-server public-site
     ```
-2.  Start a local HTTP server (e.g., using Python):
-    ```bash
-    python -m http.server 8000
-    ```
-3.  Open your browser and go to `http://localhost:8000`.
+2.  Open your browser and go to `http://localhost:8000`.
 
 Remember to have your `ENCRYPTION_PASSPHRASE` set in a `.env` file at the root of your repository for the encryption script to work.
