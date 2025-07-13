@@ -64,6 +64,16 @@ function App() {
   const [timeRange, setTimeRange] = useState<[number, number]>([minTime, maxTime]);
   const [currentTime, setCurrentTime] = useState<number>(minTime);
 
+  // Clamp currentTime to the selected timeRange
+  useEffect(() => {
+    if (currentTime < timeRange[0]) {
+      setCurrentTime(timeRange[0]);
+    }
+    if (currentTime > timeRange[1]) {
+      setCurrentTime(timeRange[1]);
+    }
+  }, [timeRange, currentTime]);
+
   return (
     <div className="App">
       {isCalibrating && (
