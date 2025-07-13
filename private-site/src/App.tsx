@@ -121,7 +121,7 @@ function App() {
     <div className="App">
       {isCalibrating && (
         <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 1001, backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white', padding: '8px 12px', borderRadius: '8px' }}>
-          Calibrating sensors...
+          Shake to reset sensors calibrating...
         </div>
       )}
       {sensorPermission === 'prompt' && (
