@@ -29,10 +29,12 @@ const Controls = ({
 
   return (
     <Box className="controls-container" sx={{
-      position: 'relative', // Position is now handled by the parent wrapper in App.tsx
-      mb: '15px', // Margin bottom to create space from the edge
-      width: '90vw', // Use viewport width for responsiveness
-      maxWidth: '600px', // Max width for larger screens
+      position: 'fixed',
+      bottom: '15px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: '90%',
+      maxWidth: '600px',
       py: 1,
       px: 2,
       borderRadius: 2,
@@ -42,7 +44,6 @@ const Controls = ({
       flexDirection: 'column',
       justifyContent: 'center',
       boxSizing: 'border-box',
-      // The background color is handled by the .controls-container class in App.css
     }}>
       <Typography variant="caption" sx={{ fontWeight: 'bold', textAlign: 'left' }}>
         Time Range

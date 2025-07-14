@@ -118,7 +118,7 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+    <div className="App">
       {isCalibrating && (
         <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 1001, backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white', padding: '8px 12px', borderRadius: '8px' }}>
           Shake-to-reset sensors calibrating...
@@ -126,51 +126,32 @@ function App() {
       )}
       {sensorPermission === 'prompt' && (
         <Tooltip title="Enable Shake-to-Reset">
-          <Fab color="primary" aria-label="enable shake to reset" style={{ position: 'absolute', top: 16, right: 16, zIndex: 1001 }} onClick={requestSensorPermission}>
+          <Fab color="primary" aria-label="enable shake to reset" style={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }} onClick={requestSensorPermission}>
             <ScreenRotationIcon />
           </Fab>
         </Tooltip>
       )}
       <Tooltip title="Logout and clear data">
-        <Fab color="secondary" aria-label="logout" style={{ position: 'absolute', bottom: 16, right: 16, zIndex: 1001 }} onClick={handleLogout}>
+        <Fab color="secondary" aria-label="logout" style={{ position: 'absolute', bottom: 16, right: 16, zIndex: 1000 }} onClick={handleLogout}>
           <DeleteIcon />
         </Fab>
       </Tooltip>
-      
-      {/* Map container takes up the full space */}
-      <div className="map-container" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-        <Map
-          activities={garminActivities}
-          timeRange={timeRange}
-          bounds={bounds}
-          viewBounds={viewBounds}
-          currentPosition={currentPosition}
-        />
-      </div>
-
-      {/* Controls are in a separate container, positioned over the map */}
-      <div className="controls-wrapper" style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        width: '100%',
-        zIndex: 1000, // Ensure controls are on top of the map
-        display: 'flex',
-        justifyContent: 'center',
-        pointerEvents: 'none' // Allow map interaction through this container
-      }}>
-        <div style={{ pointerEvents: 'auto' }}> {/* Re-enable pointer events for the controls themselves */}
-          <Controls
-            timeRange={timeRange}
-            onTimeRangeChange={handleTimeRangeChange}
-            onTimeRangeChangeCommitted={handleTimeRangeChangeCommitted}
-            currentTime={currentTime}
-            onCurrentTimeChange={handleCurrentTimeChange}
-            minTime={minTime}
-            maxTime={maxTime}
-          />
-        </div>
-      </div>
+      <Map
+        activities={garminActivities}
+        timeRange={timeRange}
+        bounds={bounds}
+        viewBounds={viewBounds}
+        currentPosition={currentPosition}
+      />
+      <Controls
+        timeRange={timeRange}
+        onTimeRangeChange={handleTimeRangeChange}
+        onTimeRangeChangeCommitted={handleTimeRangeChangeCommitted}
+        currentTime={currentTime}
+        onCurrentTimeChange={handleCurrentTimeChange}
+        minTime={minTime}
+        maxTime={maxTime}
+      />
     </div>
   );
 }
