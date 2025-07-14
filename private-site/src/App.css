@@ -47,12 +47,6 @@
   height: 100vh;
 }
 
-.App {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden; /* Ensure the app itself doesn't scroll */
-}
-
 .controls-container {
   background-color: rgba(255, 255, 255, 0.8) !important;
 }
